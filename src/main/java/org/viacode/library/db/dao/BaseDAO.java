@@ -2,6 +2,8 @@ package org.viacode.library.db.dao;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 /**
  * VIAcode
  * Created by IVolkov on 8/6/2014.
@@ -13,6 +15,7 @@ public interface BaseDAO<T> {
     void delete(T t);
     void update(T t);
     T getById(Long id);
-    //Collection<T> find(String query);
+    void deleteById(Long id);
+    List<T> getAll();
 
 }

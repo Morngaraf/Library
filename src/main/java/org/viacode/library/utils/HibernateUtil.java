@@ -1,4 +1,4 @@
-package org.viacode.library.db;
+package org.viacode.library.utils;
 
 /**
  * VIAcode

@@ -5,6 +5,8 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 /**
  * VIAcode
  * Created by IVolkov on 8/6/2014.
@@ -44,5 +46,16 @@ public class BaseDAOImpl<T> implements BaseDAO<T> {
     @SuppressWarnings("unchecked")
     public T getById(Long id) {
         return (T)getCurrentSession().get(clazz, id);
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        getCurrentSession().delete(getById(id));
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<T> getAll() {
+        return getCurrentSession().createCriteria(clazz).list();
     }
 }

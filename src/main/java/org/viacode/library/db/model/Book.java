@@ -3,6 +3,8 @@ package org.viacode.library.db.model;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.hibernate.annotations.GenericGenerator;
+import org.viacode.library.db.json.BookJson;
+import org.viacode.library.db.json.ClientJson;
 
 import javax.persistence.*;
 
@@ -22,6 +24,11 @@ public class Book {
     public Book() {
     }
 
+    public Book(String bookTitle, String bookAuthor) {
+        this.title = bookTitle;
+        this.author = bookAuthor;
+    }
+
     @Id
     @GeneratedValue(generator="increment")
     @GenericGenerator(name="increment", strategy = "increment")
@@ -30,9 +37,17 @@ public class Book {
         return this.id;
     }
 
+    public void setId(Long i) {
+        this.id = i;
+    }
+
     @Column(name="title")
     public String getTitle() {
         return this.title;
+    }
+
+    public void setTitle(String s) {
+        this.title = s;
     }
 
     @Column(name="author")
@@ -40,21 +55,13 @@ public class Book {
         return this.author;
     }
 
+    public void setAuthor(String s) {
+        this.author = s;
+    }
+
     @Column(name="quantity")
     public Integer getQuantity() {
         return this.quantity;
-    }
-
-    public void setId(Long i) {
-        this.id = i;
-    }
-
-    public void setTitle(String s) {
-        this.title = s;
-    }
-
-    public void setAuthor(String s) {
-        this.author = s;
     }
 
     public void setQuantity(Integer i) {
@@ -75,4 +82,9 @@ public class Book {
         return new HashCodeBuilder(-354333345, -1492094871).append(this.id).toHashCode();
     }
 
+    public static Book fromJSON(BookJson bj) {
+        if (bj == null || bj.getAuthor().equals("") || bj.getTitle().equals(""))
+            return null;
+        return new Book(bj.getAuthor(), bj.getTitle());
+    }
 }

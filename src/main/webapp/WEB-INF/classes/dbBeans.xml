@@ -18,11 +18,11 @@
     <tx:annotation-driven transaction-manager="transactionManager" />
     <!--<context:component-scan base-package="org.viacode.library.db.dao" />-->
 
-    <bean id="clientDAO" class="org.viacode.library.db.dao.BaseDAOImpl">
+    <bean id="clientDAO" class="org.viacode.library.db.dao.ClientDAO">
         <property name="clazz" value="org.viacode.library.db.model.Client"/>
     </bean>
 
-    <bean id="bookDAO" class="org.viacode.library.db.dao.BaseDAOImpl">
+    <bean id="bookDAO" class="org.viacode.library.db.dao.BookDAO">
         <property name="clazz" value="org.viacode.library.db.model.Book"/>
     </bean>
 
