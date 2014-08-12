@@ -16,8 +16,19 @@ import javax.persistence.*;
 @Table(name="Book")
 public class Book {
 
+    @Id
+    @GeneratedValue(generator="increment")
+    @GenericGenerator(name="increment", strategy = "increment")
+    @Column(name="id")
     private Long id;
-    private String title, author;
+
+    @Column(name="title")
+    private String title;
+
+    @Column(name="author")
+    private String author;
+
+    @Column(name="quantity")
     private Integer quantity;
 
     public Book() {
@@ -28,10 +39,6 @@ public class Book {
         this.author = bookAuthor;
     }
 
-    @Id
-    @GeneratedValue(generator="increment")
-    @GenericGenerator(name="increment", strategy = "increment")
-    @Column(name="id")
     public Long getId() {
         return this.id;
     }
@@ -40,7 +47,6 @@ public class Book {
         this.id = i;
     }
 
-    @Column(name="title")
     public String getTitle() {
         return this.title;
     }
@@ -49,7 +55,6 @@ public class Book {
         this.title = s;
     }
 
-    @Column(name="author")
     public String getAuthor() {
         return this.author;
     }
@@ -58,7 +63,6 @@ public class Book {
         this.author = s;
     }
 
-    @Column(name="quantity")
     public Integer getQuantity() {
         return this.quantity;
     }

@@ -1,5 +1,6 @@
 package org.viacode.library.utils;
 
+import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -12,7 +13,7 @@ public final class ContextUtil {
 
     private static ApplicationContext applicationContext;
 
-    public static ApplicationContext getApplicationContext() {
+    public static ApplicationContext getApplicationContext() throws BeansException {
         if (applicationContext != null) return applicationContext;
         applicationContext = new ClassPathXmlApplicationContext(new String[] {"dbBeans.xml"});
         return applicationContext;

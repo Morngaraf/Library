@@ -1,5 +1,8 @@
 package org.viacode.library.services;
 
+import org.hibernate.HibernateException;
+import org.springframework.beans.BeansException;
+import org.viacode.library.EntityNotFoundException;
 import org.viacode.library.db.dao.BookDAO;
 import org.viacode.library.db.model.Book;
 import org.viacode.library.utils.ContextUtil;
@@ -19,25 +22,23 @@ public class BookService {
         return bookService;
     }
 
-    public Book getBookById(Long id) {
+    public Book getBookById(Long id) throws BeansException, HibernateException {
         return getDAO().getById(id);
     }
 
-    public List<Book> getAll() {
+    public List<Book> getAll() throws BeansException, HibernateException {
         return getDAO().getAll();
     }
 
-    public Boolean deleteBook(Long id) {
+    public void deleteBook(Long id) throws BeansException, HibernateException, EntityNotFoundException {
         getDAO().deleteById(id);
-        return true;
     }
 
-    public Boolean addItem(Book book) {
+    public void addItem(Book book) throws BeansException, HibernateException {
         getDAO().save(book);
-        return true;
     }
 
-    public Book takeBook(Long bookId) {
+    public Book takeBook(Long bookId) throws BeansException, HibernateException {
         Book book = getBookById(bookId);
         if (book.getQuantity() <= 0) return null;
         book.setQuantity(book.getQuantity() - 1);
@@ -45,14 +46,14 @@ public class BookService {
         return book;
     }
 
-    public Book returnBook(Long bookId) {
+    public Book returnBook(Long bookId) throws BeansException, HibernateException {
         Book book = getBookById(bookId);
         book.setQuantity(book.getQuantity() + 1);
         getDAO().update(book);
         return book;
     }
 
-    private BookDAO getDAO() {
+    private BookDAO getDAO() throws BeansException {
         return (BookDAO)(ContextUtil.getApplicationContext().getBean("bookDAO"));
     }
 }

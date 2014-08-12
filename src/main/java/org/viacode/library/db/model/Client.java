@@ -18,8 +18,21 @@ import java.util.Set;
 @Table(name = "Client")
 public class Client {
 
+    @Id
+    @GeneratedValue(generator = "increment")
+    @GenericGenerator(name = "increment", strategy = "increment")
+    @Column(name = "id")
     private Long id;
-    private String firstName, lastName;
+
+    @Column(name = "firstName")
+    private String firstName;
+
+    @Column(name = "lastName")
+    private String lastName;
+
+    //FetchType.EAGER is used for accessing "books" values
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinTable(name = "ClientHasBook", joinColumns = @JoinColumn(name = "client_id"), inverseJoinColumns = @JoinColumn(name = "book_id"))
     private Set<Book> books = new HashSet<Book>(0);
 
     public Client() {
@@ -30,10 +43,6 @@ public class Client {
         this.lastName = clientLastName;
     }
 
-    @Id
-    @GeneratedValue(generator = "increment")
-    @GenericGenerator(name = "increment", strategy = "increment")
-    @Column(name = "id")
     public Long getId() {
         return this.id;
     }
@@ -42,7 +51,6 @@ public class Client {
         this.id = i;
     }
 
-    @Column(name = "firstName")
     public String getFirstName() {
         return firstName;
     }
@@ -51,7 +59,6 @@ public class Client {
         this.firstName = fName;
     }
 
-    @Column(name = "lastName")
     public String getLastName() {
         return lastName;
     }
@@ -60,9 +67,6 @@ public class Client {
         this.lastName = lName;
     }
 
-    //FetchType.EAGER is used for accessing "books" values
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinTable(name = "ClientHasBook", joinColumns = @JoinColumn(name = "client_id"), inverseJoinColumns = @JoinColumn(name = "book_id"))
     public Set<Book> getBooks() {
         return books;
     }

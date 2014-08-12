@@ -1,5 +1,6 @@
 package org.viacode.library.db.dao;
 
+import org.hibernate.HibernateException;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,7 +19,7 @@ import java.util.Map;
 @Repository
 public class BookDAO extends BaseDAOImpl<Book> {
 
-    public Book find(Book book) {
+    public Book find(Book book) throws HibernateException {
         Map<String, String> restrictionMap = new HashMap<String, String>();
         restrictionMap.put("author", book.getAuthor());
         restrictionMap.put("title", book.getTitle());
