@@ -56,6 +56,7 @@ public class BaseDAOImpl<T> implements BaseDAO<T> {
     @Override
     @SuppressWarnings("unchecked")
     public List<T> getAll() {
-        return getCurrentSession().createCriteria(clazz).list();
+        String hql = "select a from " + clazz.getSimpleName() + " a";
+        return getCurrentSession().createQuery(hql).list();
     }
 }

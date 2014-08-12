@@ -1,25 +1,26 @@
 package org.viacode.library.db.json;
 
 /**
+ * VIAcode
  * Created by IVolkov on 8/8/2014.
  */
 public class ClientJson {
 
-    private String firstName, secondName;
+    private String firstName, lastName;
 
     public String getFirstName() {
         return firstName;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
+    public void setFirstName(String fName) {
+        this.firstName = fName;
     }
 
-    public String getSecondName() {
-        return secondName;
+    public String getLastName() {
+        return lastName;
     }
 
-    public void setSecondName(String secondName) {
-        this.secondName = secondName;
+    public void setLastName(String lName) {
+        this.lastName = lName;
     }
 }

@@ -4,7 +4,6 @@ import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.hibernate.annotations.GenericGenerator;
 import org.viacode.library.db.json.BookJson;
-import org.viacode.library.db.json.ClientJson;
 
 import javax.persistence.*;
 

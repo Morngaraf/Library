@@ -1,5 +1,7 @@
 package org.viacode.library.db.model;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.hibernate.annotations.GenericGenerator;
 import org.viacode.library.db.json.ClientJson;
 
@@ -17,15 +19,15 @@ import java.util.Set;
 public class Client {
 
     private Long id;
-    private String firstName, secondName;
+    private String firstName, lastName;
     private Set<Book> books = new HashSet<Book>(0);
 
     public Client() {
     }
 
-    public Client(String clientFirstName, String clientSecondName) {
+    public Client(String clientFirstName, String clientLastName) {
         this.firstName = clientFirstName;
-        this.secondName = clientSecondName;
+        this.lastName = clientLastName;
     }
 
     @Id
@@ -45,17 +47,17 @@ public class Client {
         return firstName;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
+    public void setFirstName(String fName) {
+        this.firstName = fName;
     }
 
-    @Column(name = "secondName")
-    public String getSecondName() {
-        return secondName;
+    @Column(name = "lastName")
+    public String getLastName() {
+        return lastName;
     }
 
-    public void setSecondName(String secondName) {
-        this.secondName = secondName;
+    public void setLastName(String lName) {
+        this.lastName = lName;
     }
 
     //FetchType.EAGER is used for accessing "books" values
@@ -70,8 +72,23 @@ public class Client {
     }
 
     public static Client fromJSON(ClientJson cj) {
-        if (cj == null || cj.getFirstName().equals("") || cj.getSecondName().equals(""))
+        if (cj == null || cj.getFirstName().equals("") || cj.getLastName().equals(""))
             return null;
-        return new Client(cj.getFirstName(), cj.getSecondName());
+        return new Client(cj.getFirstName(), cj.getLastName());
     }
+
+    @Override
+    public boolean equals(Object object) {
+        if (!(object instanceof Client)) {
+            return false;
+        }
+        Client client = (Client) object;
+        return new EqualsBuilder().append(this.id, client.id).isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(-354333345, -1492094871).append(this.id).toHashCode();
+    }
+
 }

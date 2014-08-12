@@ -13,47 +13,50 @@ import java.util.List;
  */
 public class ClientService {
 
-    public static Client getClientById(Long id) {
+    private static ClientService clientService;
+
+    public static ClientService getClientService() {
+        if (clientService == null) clientService = new ClientService();
+        return clientService;
+    }
+
+    public Client getClientById(Long id) {
         return getDAO().getById(id);
     }
 
-    public static List<Client> getAll() {
+    public List<Client> getAll() {
         return getDAO().getAll();
     }
 
-    public static Boolean deleteClient(Long id) {
+    public Boolean deleteClient(Long id) {
         getDAO().deleteById(id);
         return true;
     }
 
-    public static Boolean addClient(Client client) {
+    public Boolean addClient(Client client) {
         getDAO().save(client);
         return true;
     }
 
-    public static Boolean addClientBook(Client client, Book book) {
-        Boolean result = BookService.takeBook(book);
-        if (!result) {
-            BookService.returnBook(book);
-        } else {
-            client.getBooks().add(book);
-            getDAO().update(client);
-        }
-        return result;
+    public Boolean addClientBook(Long clientId, Long bookId) {
+        Book bookToTake = BookService.getBookService().takeBook(bookId);
+        if (bookToTake == null) return false;
+        Client client = getClientById(clientId);
+        client.getBooks().add(bookToTake);
+        getDAO().update(client);
+        return true;
     }
 
-    public static Boolean returnClientBook(Client client, Book book) {
-        Boolean result = BookService.returnBook(book);
-        if (!result) {
-            BookService.takeBook(book);
-        } else {
-            client.getBooks().remove(book);
-            getDAO().update(client);
-        }
-        return result;
+    public Boolean returnClientBook(Long clientId, Long bookId) {
+        Book bookToReturn = BookService.getBookService().returnBook(bookId);
+        if (bookToReturn == null) return false;
+        Client client = getClientById(clientId);
+        client.getBooks().remove(bookToReturn);
+        getDAO().update(client);
+        return true;
     }
 
-    private static ClientDAO getDAO() {
+    private ClientDAO getDAO() {
         return (ClientDAO)(ContextUtil.getApplicationContext().getBean("clientDAO"));
     }
 }

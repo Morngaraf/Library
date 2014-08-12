@@ -13,10 +13,12 @@ import java.util.List;
 @Produces("application/json")
 public class BookResource {
 
+    private BookService bookService = BookService.getBookService();
+
     @GET
     @Path("/{book_id}")
     public Response getBook(@PathParam("book_id") Long bookId) {
-        Book book = BookService.getBookById(bookId);
+        Book book = bookService.getBookById(bookId);
         if (book == null)
             return Response.ok().type(MediaType.TEXT_PLAIN_TYPE).entity("No book with id = " + bookId + " found.").build();
         return Response.ok().entity(book).build();
@@ -24,7 +26,7 @@ public class BookResource {
 
     @GET
     public Response getAllBooks() {
-        List<Book> books = BookService.getAll();
+        List<Book> books = bookService.getAll();
         if (books.size() <= 0)
             return Response.ok().type(MediaType.TEXT_PLAIN_TYPE).entity("There are no books in the library.").build();
         return Response.ok().entity(books).build();
@@ -33,7 +35,7 @@ public class BookResource {
     @DELETE
     @Path("/{book_id}")
     public Response deleteBook(@PathParam("book_id") Long bookId) {
-        if (!BookService.deleteBook(bookId))
+        if (!bookService.deleteBook(bookId))
             return Response.serverError().entity(bookId).build();
         return Response.ok().build();
     }
@@ -44,7 +46,7 @@ public class BookResource {
         Book book = Book.fromJSON(bookJson);
         if (book == null)
             return Response.status(Response.Status.BAD_REQUEST).type(MediaType.TEXT_PLAIN_TYPE).entity("Wrong JSON input!").build();
-        if (!BookService.addItem(book))
+        if (!bookService.addItem(book))
             return Response.serverError().entity(book).build();
         return Response.ok().build();
     }

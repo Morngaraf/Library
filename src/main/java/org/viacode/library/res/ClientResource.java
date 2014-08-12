@@ -1,10 +1,8 @@
 package org.viacode.library.res;
 
-import org.viacode.library.db.json.BookJson;
 import org.viacode.library.db.json.ClientJson;
 import org.viacode.library.db.model.Book;
 import org.viacode.library.db.model.Client;
-import org.viacode.library.services.BookService;
 import org.viacode.library.services.ClientService;
 
 import javax.ws.rs.*;
@@ -17,10 +15,12 @@ import java.util.Set;
 @Produces("application/json")
 public class ClientResource {
 
+    private ClientService clientService = ClientService.getClientService();
+
     @GET
     @Path("/{client_id}")
     public Response getClient(@PathParam("client_id") Long clientId) {
-        Client client = ClientService.getClientById(clientId);
+        Client client = clientService.getClientById(clientId);
         if (client == null)
             return Response.ok().type(MediaType.TEXT_PLAIN_TYPE).entity("No client with id = " + clientId + " found.").build();
         return Response.ok().entity(client).build();
@@ -28,7 +28,7 @@ public class ClientResource {
 
     @GET
     public Response getAllClients() {
-        List<Client> clients = ClientService.getAll();
+        List<Client> clients = clientService.getAll();
         if (clients.size() <= 0)
             return Response.ok().type(MediaType.TEXT_PLAIN_TYPE).entity("There are no clients in the library.").build();
         return Response.ok().entity(clients).build();
@@ -37,7 +37,7 @@ public class ClientResource {
     @DELETE
     @Path("/{client_id}")
     public Response deleteClient(@PathParam("client_id") Long clientId) {
-        if (!ClientService.deleteClient(clientId))
+        if (!clientService.deleteClient(clientId))
             return Response.serverError().entity(clientId).build();
         return Response.ok().type(MediaType.TEXT_PLAIN_TYPE).entity("Client with id = " + clientId + " successfully deleted.").build();
     }
@@ -48,7 +48,7 @@ public class ClientResource {
         Client client = Client.fromJSON(clientJson);
         if (client == null)
             return Response.status(Response.Status.BAD_REQUEST).type(MediaType.TEXT_PLAIN_TYPE).entity("Wrong JSON input!").build();
-        if (!ClientService.addClient(client))
+        if (!clientService.addClient(client))
             return Response.serverError().entity(client).build();
         return Response.ok().status(Response.Status.CREATED).entity(client).build();
     }
@@ -56,40 +56,26 @@ public class ClientResource {
     @GET
     @Path("/{client_id}/books")
     public Response getClientBooks(@PathParam("client_id") Long clientId) {
-        Set<Book> clientBooks = ClientService.getClientById(clientId).getBooks();
+        Set<Book> clientBooks = clientService.getClientById(clientId).getBooks();
         if (clientBooks.size() <= 0)
             return Response.ok().type(MediaType.TEXT_PLAIN_TYPE).entity("There are no books taken by client with id = " + clientId + " .").build();
         return Response.ok().entity(clientBooks).build();
     }
 
-    @PUT
-    @Path("/{client_id}/books")
-    @Consumes("application/json")
-    public Response addClientBook(@PathParam("client_id") Long clientId, BookJson bookJson) {
-        Book book = Book.fromJSON(bookJson);
-        if (book == null)
-            return Response.status(Response.Status.BAD_REQUEST).type(MediaType.TEXT_PLAIN_TYPE).entity("Wrong JSON input!").build();
-        Client client = ClientService.getClientById(clientId);
-        if (client == null)
-            return Response.ok().type(MediaType.TEXT_PLAIN_TYPE).entity("No client with id = " + clientId + " found.").build();
-        if (!ClientService.addClientBook(client, book))
-            return Response.serverError().entity(client).build();
-        return Response.ok().entity(client.getBooks()).build();
+    @POST
+    @Path("/{client_id}/books/{book_id}/take")
+    public Response addClientBook(@PathParam("client_id") Long clientId, @PathParam("book_id") Long bookId) {
+        if (!clientService.addClientBook(clientId, bookId))
+            return Response.serverError().build();
+        return Response.ok().build();
     }
 
-    @DELETE
-    @Path("/{client_id}/books/{book_id}")
-    @Consumes("application/json")
+    @POST
+    @Path("/{client_id}/books/{book_id}/return")
     public Response returnClientBook(@PathParam("client_id") Long clientId, @PathParam("book_id") Long bookId) {
-        Client client = ClientService.getClientById(clientId);
-        if (client == null)
-            return Response.ok().type(MediaType.TEXT_PLAIN_TYPE).entity("No client with id = " + clientId + " found.").build();
-        Book book = BookService.getBookById(bookId);
-        if (book == null)
-            return Response.ok().type(MediaType.TEXT_PLAIN_TYPE).entity("No book with id = " + bookId + " found.").build();
-        if (!ClientService.returnClientBook(client, book))
-            return Response.serverError().entity(client).build();
-        return Response.ok().entity(client.getBooks()).build();
+        if (!clientService.returnClientBook(clientId, bookId))
+            return Response.serverError().build();
+        return Response.ok().build();
     }
 }
 

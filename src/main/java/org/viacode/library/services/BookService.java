@@ -12,42 +12,47 @@ import java.util.List;
  */
 public class BookService {
 
-    public static Book getBookById(Long id) {
+    private static BookService bookService;
+
+    public static BookService getBookService() {
+        if (bookService == null) bookService = new BookService();
+        return bookService;
+    }
+
+    public Book getBookById(Long id) {
         return getDAO().getById(id);
     }
 
-    public static Book getBook(Book book) {
-        return getDAO().find(book);
-    }
-
-    public static List<Book> getAll() {
+    public List<Book> getAll() {
         return getDAO().getAll();
     }
 
-    public static Boolean deleteBook(Long id) {
+    public Boolean deleteBook(Long id) {
         getDAO().deleteById(id);
         return true;
     }
 
-    public static Boolean addItem(Book book) {
+    public Boolean addItem(Book book) {
         getDAO().save(book);
         return true;
     }
 
-    public static Boolean takeBook(Book book) {
-        if (book.getQuantity() <= 0) return false;
+    public Book takeBook(Long bookId) {
+        Book book = getBookById(bookId);
+        if (book.getQuantity() <= 0) return null;
         book.setQuantity(book.getQuantity() - 1);
         getDAO().update(book);
-        return true;
+        return book;
     }
 
-    public static Boolean returnBook(Book book) {
+    public Book returnBook(Long bookId) {
+        Book book = getBookById(bookId);
         book.setQuantity(book.getQuantity() + 1);
         getDAO().update(book);
-        return true;
+        return book;
     }
 
-    private static BookDAO getDAO() {
+    private BookDAO getDAO() {
         return (BookDAO)(ContextUtil.getApplicationContext().getBean("bookDAO"));
     }
 }
