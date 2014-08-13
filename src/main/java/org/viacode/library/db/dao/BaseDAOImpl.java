@@ -3,8 +3,6 @@ package org.viacode.library.db.dao;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.annotations.NamedQueries;
-import org.hibernate.annotations.NamedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.viacode.library.EntityNotFoundException;
@@ -16,13 +14,6 @@ import java.util.List;
  * Created by IVolkov on 8/6/2014.
  */
 @Transactional
-/*
-@NamedQueries({
-        @NamedQuery(
-                name = "getAllEntityRows",
-                query = "select a from :entityName a"
-        )
-})*/
 public class BaseDAOImpl<T> implements BaseDAO<T> {
 
     Class<T> clazz;
@@ -71,6 +62,5 @@ public class BaseDAOImpl<T> implements BaseDAO<T> {
     public List<T> getAll() throws HibernateException {
         String hql = "select a from " + clazz.getSimpleName() + " a";
         return getCurrentSession().createQuery(hql).list();
-        //return getCurrentSession().getNamedQuery("getAllEntityRows").setString("entityName", clazz.getSimpleName()).list();
     }
 }

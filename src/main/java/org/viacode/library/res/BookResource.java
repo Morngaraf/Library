@@ -1,8 +1,8 @@
 package org.viacode.library.res;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.HibernateException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.viacode.library.EntityNotFoundException;
 import org.viacode.library.db.json.BookJson;
@@ -17,7 +17,7 @@ import java.util.List;
 @Produces("application/json")
 public class BookResource {
 
-    private final Logger logger = LoggerFactory.getLogger(BookResource.class);
+    private final Logger logger = LogManager.getLogger(BookResource.class);
     private BookService bookService = BookService.getBookService();
 
     @GET
@@ -27,7 +27,7 @@ public class BookResource {
         try {
             book = bookService.getBookById(bookId);
         } catch (BeansException | HibernateException ex) {
-            logger.error(ex.getMessage());
+            logger.error("Exception during processing 'get book by id' operation : ", ex);
             return Response.serverError().entity(ex).build();
         }
         if (book == null)
@@ -41,7 +41,7 @@ public class BookResource {
         try {
             books = bookService.getAll();
         } catch (BeansException | HibernateException ex) {
-            logger.error(ex.getMessage());
+            logger.error("Exception during processing 'get all books' operation : ", ex);
             return Response.serverError().entity(ex).build();
         }
         if (books.size() <= 0)
@@ -55,7 +55,7 @@ public class BookResource {
         try {
             bookService.deleteBook(bookId);
         } catch (BeansException | HibernateException | EntityNotFoundException ex) {
-            logger.error(ex.getMessage());
+            logger.error("Exception during processing 'delete book' operation : ", ex);
             if (ex instanceof EntityNotFoundException)
                 return Response.status(Response.Status.NOT_FOUND).entity(ex).build();
             return Response.serverError().entity(ex).build();
@@ -74,7 +74,7 @@ public class BookResource {
         try {
             bookService.addItem(book);
         } catch (BeansException | HibernateException ex) {
-            logger.error(ex.getMessage());
+            logger.error("Exception during processing 'add new book' operation : ", ex);
             return Response.serverError().entity(ex).build();
         }
         return Response.ok().status(Response.Status.CREATED).build();

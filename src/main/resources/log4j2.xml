@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="all">
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT" monitorInterval="30">
+            <PatternLayout pattern="%d{HH:mm:ss,SSS} %-7p [%t][%c{2}] - %m%n"/>
+        </Console>
+    </Appenders>
+    <Loggers>
+        <logger name="org.springframework" level="off">
+            <AppenderRef ref="Console"/>
+        </logger>
+        <logger name="org.hibernate" level="off">
+            <AppenderRef ref="Console"/>
+        </logger>
+        <Root level="all">
+            <AppenderRef ref="Console"/>
+        </Root>
+    </Loggers>
+</Configuration>
+<!--%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n-->

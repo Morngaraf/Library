@@ -1,8 +1,8 @@
 package org.viacode.library.res;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.HibernateException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.viacode.library.EntityNotFoundException;
 import org.viacode.library.db.json.ClientJson;
@@ -20,7 +20,8 @@ import java.util.Set;
 @Produces("application/json")
 public class ClientResource {
 
-    private final Logger logger = LoggerFactory.getLogger(ClientResource.class);
+    //private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(ClientResource.class);
+    private final Logger logger = LogManager.getLogger(ClientResource.class);
     private ClientService clientService = ClientService.getClientService();
 
     @GET
@@ -30,7 +31,7 @@ public class ClientResource {
         try {
             client = clientService.getClientById(clientId);
         } catch (BeansException | HibernateException ex) {
-            logger.error(ex.getMessage());
+            logger.error("Exception during processing 'get client by id' operation : ", ex);
             return Response.serverError().entity(ex).build();
         }
         if (client == null)
@@ -44,7 +45,7 @@ public class ClientResource {
         try {
             clients = clientService.getAll();
         } catch (BeansException | HibernateException ex) {
-            logger.error(ex.getMessage());
+            logger.error("Exception during processing 'get all clients' operation : ", ex);
             return Response.serverError().entity(ex).build();
         }
         if (clients.size() <= 0)
@@ -58,7 +59,7 @@ public class ClientResource {
         try {
             clientService.deleteClient(clientId);
         } catch (BeansException | HibernateException | EntityNotFoundException ex) {
-            logger.error(ex.getMessage());
+            logger.error("Exception during processing 'delete client' operation : ", ex);
             if (ex instanceof EntityNotFoundException)
                 return Response.status(Response.Status.NOT_FOUND).entity(ex).build();
             return Response.serverError().entity(ex).build();
@@ -77,7 +78,7 @@ public class ClientResource {
         try {
             clientService.addClient(client);
         } catch (BeansException | HibernateException ex) {
-            logger.error(ex.getMessage());
+            logger.error("Exception during processing 'add new client' operation : ", ex);
             return Response.serverError().entity(ex).build();
         }
         return Response.ok().status(Response.Status.CREATED).build();
@@ -90,7 +91,7 @@ public class ClientResource {
         try {
             clientBooks = clientService.getClientById(clientId).getBooks();
         } catch (BeansException | HibernateException ex) {
-            logger.error(ex.getMessage());
+            logger.error("Exception during processing 'get client books' operation : ", ex);
             return Response.serverError().entity(ex).build();
         }
         if (clientBooks.size() <= 0)
@@ -104,7 +105,7 @@ public class ClientResource {
         try {
             clientService.addClientBook(clientId, bookId);
         } catch (BeansException | HibernateException | EntityNotFoundException ex) {
-            logger.error(ex.getMessage());
+            logger.error("Exception during processing 'assign book to client' operation : ", ex);
             if (ex instanceof EntityNotFoundException)
                 return Response.status(Response.Status.NOT_FOUND).entity(ex).build();
             return Response.serverError().entity(ex).build();
@@ -119,7 +120,7 @@ public class ClientResource {
         try {
             clientService.returnClientBook(clientId, bookId);
         } catch (BeansException | HibernateException | EntityNotFoundException ex) {
-            logger.error(ex.getMessage());
+            logger.error("Exception during processing 'return book to library' operation : ", ex);
             if (ex instanceof EntityNotFoundException)
                 return Response.status(Response.Status.NOT_FOUND).entity(ex).build();
             return Response.serverError().entity(ex).build();
