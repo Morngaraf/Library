@@ -1,4 +1,4 @@
-package org.viacode.library;
+package org.viacode.library.exception;
 
 /**
  * VIAcode

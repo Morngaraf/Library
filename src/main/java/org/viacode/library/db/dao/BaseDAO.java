@@ -1,7 +1,8 @@
 package org.viacode.library.db.dao;
 
 import org.springframework.transaction.annotation.Transactional;
-import org.viacode.library.EntityNotFoundException;
+import org.viacode.library.exception.EntityNotFoundException;
+import org.viacode.library.exception.InternalServerErrorException;
 
 import java.util.List;
 
@@ -12,11 +13,11 @@ import java.util.List;
 @Transactional
 public interface BaseDAO<T> {
 
-    void save(T t);
-    void delete(T t);
-    void update(T t);
-    T getById(Long id);
-    void deleteById(Long id) throws EntityNotFoundException;
-    List<T> getAll();
+    void save(T t) throws InternalServerErrorException;
+    void delete(T t) throws InternalServerErrorException;
+    void update(T t) throws InternalServerErrorException;
+    T getById(Long id) throws InternalServerErrorException;
+    void deleteById(Long id) throws InternalServerErrorException, EntityNotFoundException;
+    List<T> getAll() throws InternalServerErrorException;
 
 }

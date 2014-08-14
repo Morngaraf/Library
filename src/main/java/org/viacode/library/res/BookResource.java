@@ -4,10 +4,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.springframework.beans.BeansException;
-import org.viacode.library.EntityNotFoundException;
+import org.viacode.library.exception.*;
 import org.viacode.library.db.json.BookJson;
 import org.viacode.library.db.model.Book;
-import org.viacode.library.services.BookService;
+import org.viacode.library.exception.InternalServerErrorException;
+import org.viacode.library.service.BookService;
+import org.viacode.library.util.ContextUtil;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
@@ -18,20 +20,23 @@ import java.util.List;
 public class BookResource {
 
     private final Logger logger = LogManager.getLogger(BookResource.class);
-    private BookService bookService = BookService.getBookService();
+
+    private BookService getBookService() {
+        return (BookService) ContextUtil.getApplicationContext().getBean("BookService");
+    }
 
     @GET
     @Path("/{book_id}")
     public Response getBook(@PathParam("book_id") Long bookId) {
         Book book;
         try {
-            book = bookService.getBookById(bookId);
-        } catch (BeansException | HibernateException ex) {
+            book = getBookService().getBookById(bookId);
+        } catch (InternalServerErrorException ex) {
             logger.error("Exception during processing 'get book by id' operation : ", ex);
-            return Response.serverError().entity(ex).build();
+            return Response.serverError().entity("Sorry, internal server error occurred. Please, try again later.").build();
         }
         if (book == null)
-            return Response.noContent().entity("No book with id = " + bookId + " found.").build();
+            return Response.status(Response.Status.NOT_FOUND).entity("Sorry, there is no book in the library matching your request.").build();
         return Response.ok().entity(book).build();
     }
 
@@ -39,13 +44,11 @@ public class BookResource {
     public Response getAllBooks() {
         List<Book> books;
         try {
-            books = bookService.getAll();
-        } catch (BeansException | HibernateException ex) {
+            books = getBookService().getAll();
+        } catch (InternalServerErrorException ex) {
             logger.error("Exception during processing 'get all books' operation : ", ex);
-            return Response.serverError().entity(ex).build();
+            return Response.serverError().entity("Sorry, internal server error occurred. Please, try again later.").build();
         }
-        if (books.size() <= 0)
-            return Response.noContent().entity("There are no books in the library.").build();
         return Response.ok().entity(books).build();
     }
 
@@ -53,12 +56,12 @@ public class BookResource {
     @Path("/{book_id}")
     public Response deleteBook(@PathParam("book_id") Long bookId) {
         try {
-            bookService.deleteBook(bookId);
-        } catch (BeansException | HibernateException | EntityNotFoundException ex) {
+            getBookService().deleteBook(bookId);
+        } catch (InternalServerErrorException | EntityNotFoundException ex) {
             logger.error("Exception during processing 'delete book' operation : ", ex);
             if (ex instanceof EntityNotFoundException)
-                return Response.status(Response.Status.NOT_FOUND).entity(ex).build();
-            return Response.serverError().entity(ex).build();
+                return Response.status(Response.Status.NOT_FOUND).entity("Sorry, there is no book in the library matching your request.").build();
+            return Response.serverError().entity("Sorry, internal server error occurred. Please, try again later.").build();
         }
         return Response.ok().build();
     }
@@ -72,12 +75,12 @@ public class BookResource {
             return Response.status(Response.Status.BAD_REQUEST).entity("Wrong JSON input!").build();
 
         try {
-            bookService.addItem(book);
-        } catch (BeansException | HibernateException ex) {
+            getBookService().addItem(book);
+        } catch (InternalServerErrorException ex) {
             logger.error("Exception during processing 'add new book' operation : ", ex);
-            return Response.serverError().entity(ex).build();
+            return Response.serverError().entity("Sorry, internal server error occurred. Please, try again later.").build();
         }
-        return Response.ok().status(Response.Status.CREATED).build();
+        return Response.status(Response.Status.CREATED).build();
     }
 }
 

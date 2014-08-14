@@ -2,13 +2,14 @@ package org.viacode.library.res;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.hibernate.HibernateException;
 import org.springframework.beans.BeansException;
-import org.viacode.library.EntityNotFoundException;
+import org.viacode.library.exception.*;
 import org.viacode.library.db.json.ClientJson;
 import org.viacode.library.db.model.Book;
 import org.viacode.library.db.model.Client;
-import org.viacode.library.services.ClientService;
+import org.viacode.library.exception.InternalServerErrorException;
+import org.viacode.library.service.ClientService;
+import org.viacode.library.util.ContextUtil;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -20,22 +21,28 @@ import java.util.Set;
 @Produces("application/json")
 public class ClientResource {
 
-    //private final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(ClientResource.class);
-    private final Logger logger = LogManager.getLogger(ClientResource.class);
-    private ClientService clientService = ClientService.getClientService();
+    private final static Logger logger = LogManager.getLogger(ClientResource.class);
+
+    private ClientService getClientService() throws InternalServerErrorException{
+        try {
+            return (ClientService) ContextUtil.getApplicationContext().getBean("ClientService");
+        } catch (BeansException ex) {
+            throw new InternalServerErrorException("Error generating bean ClientService", ex);
+        }
+    }
 
     @GET
     @Path("/{client_id}")
     public Response getClient(@PathParam("client_id") Long clientId) {
         Client client;
         try {
-            client = clientService.getClientById(clientId);
-        } catch (BeansException | HibernateException ex) {
+            client = getClientService().getClientById(clientId);
+        } catch (InternalServerErrorException ex) {
             logger.error("Exception during processing 'get client by id' operation : ", ex);
-            return Response.serverError().entity(ex).build();
+            return Response.serverError().entity("Sorry, internal server error occurred. Please, try again later.").build();
         }
         if (client == null)
-            return Response.noContent().entity("No client with id = " + clientId + " found.").build();
+            return Response.status(Response.Status.NOT_FOUND).entity("Sorry, there is no client in the library matching your request.").build();
         return Response.ok().entity(client).build();
     }
 
@@ -43,13 +50,11 @@ public class ClientResource {
     public Response getAllClients() {
         List<Client> clients;
         try {
-            clients = clientService.getAll();
-        } catch (BeansException | HibernateException ex) {
+            clients = getClientService().getAll();
+        } catch (InternalServerErrorException ex) {
             logger.error("Exception during processing 'get all clients' operation : ", ex);
-            return Response.serverError().entity(ex).build();
+            return Response.serverError().entity("Sorry, internal server error occurred. Please, try again later.").build();
         }
-        if (clients.size() <= 0)
-            return Response.noContent().entity("There are no clients in the library.").build();
         return Response.ok().entity(clients).build();
     }
 
@@ -57,12 +62,12 @@ public class ClientResource {
     @Path("/{client_id}")
     public Response deleteClient(@PathParam("client_id") Long clientId) {
         try {
-            clientService.deleteClient(clientId);
-        } catch (BeansException | HibernateException | EntityNotFoundException ex) {
+            getClientService().deleteClient(clientId);
+        } catch (InternalServerErrorException | EntityNotFoundException ex) {
             logger.error("Exception during processing 'delete client' operation : ", ex);
             if (ex instanceof EntityNotFoundException)
-                return Response.status(Response.Status.NOT_FOUND).entity(ex).build();
-            return Response.serverError().entity(ex).build();
+                return Response.status(Response.Status.NOT_FOUND).entity("Sorry, there is no client in the library matching your request.").build();
+            return Response.serverError().entity("Sorry, internal server error occurred. Please, try again later.").build();
         }
         return Response.ok().build();
     }
@@ -76,10 +81,10 @@ public class ClientResource {
             return Response.status(Response.Status.BAD_REQUEST).type(MediaType.TEXT_PLAIN_TYPE).entity("Wrong JSON input!").build();
 
         try {
-            clientService.addClient(client);
-        } catch (BeansException | HibernateException ex) {
+            getClientService().addClient(client);
+        } catch (InternalServerErrorException ex) {
             logger.error("Exception during processing 'add new client' operation : ", ex);
-            return Response.serverError().entity(ex).build();
+            return Response.serverError().entity("Sorry, internal server error occurred. Please, try again later.").build();
         }
         return Response.ok().status(Response.Status.CREATED).build();
     }
@@ -89,44 +94,42 @@ public class ClientResource {
     public Response getClientBooks(@PathParam("client_id") Long clientId) {
         Set<Book> clientBooks;
         try {
-            clientBooks = clientService.getClientById(clientId).getBooks();
-        } catch (BeansException | HibernateException ex) {
+            clientBooks = getClientService().getClientById(clientId).getBooks();
+        } catch (InternalServerErrorException ex) {
             logger.error("Exception during processing 'get client books' operation : ", ex);
-            return Response.serverError().entity(ex).build();
+            return Response.serverError().entity("Sorry, internal server error occurred. Please, try again later.").build();
         }
-        if (clientBooks.size() <= 0)
-            return Response.noContent().entity("There are no books taken by client with id = " + clientId + " .").build();
         return Response.ok().entity(clientBooks).build();
     }
 
     @POST
     @Path("/{client_id}/books/{book_id}/take")
     public Response addClientBook(@PathParam("client_id") Long clientId, @PathParam("book_id") Long bookId) {
+        Client client;
         try {
-            clientService.addClientBook(clientId, bookId);
-        } catch (BeansException | HibernateException | EntityNotFoundException ex) {
+            client = getClientService().addClientBook(clientId, bookId);
+        } catch (InternalServerErrorException | EntityNotFoundException ex) {
             logger.error("Exception during processing 'assign book to client' operation : ", ex);
             if (ex instanceof EntityNotFoundException)
-                return Response.status(Response.Status.NOT_FOUND).entity(ex).build();
-            return Response.serverError().entity(ex).build();
+                return Response.status(Response.Status.NOT_FOUND).entity("Sorry, there is no client/book in the library matching your request.").build();
+            return Response.serverError().entity("Sorry, internal server error occurred. Please, try again later.").build();
         }
-        //FIXME: maybe another status?
-        return Response.ok().build();
+        return Response.ok().entity(client).build();
     }
 
     @POST
     @Path("/{client_id}/books/{book_id}/return")
     public Response returnClientBook(@PathParam("client_id") Long clientId, @PathParam("book_id") Long bookId) {
+        Client client;
         try {
-            clientService.returnClientBook(clientId, bookId);
-        } catch (BeansException | HibernateException | EntityNotFoundException ex) {
+            client = getClientService().returnClientBook(clientId, bookId);
+        } catch (InternalServerErrorException | EntityNotFoundException ex) {
             logger.error("Exception during processing 'return book to library' operation : ", ex);
             if (ex instanceof EntityNotFoundException)
-                return Response.status(Response.Status.NOT_FOUND).entity(ex).build();
-            return Response.serverError().entity(ex).build();
+                return Response.status(Response.Status.NOT_FOUND).entity("Sorry, there is no client/book in the library matching your request.").build();
+            return Response.serverError().entity("Sorry, internal server error occurred. Please, try again later.").build();
         }
-        //FIXME: maybe another status?
-        return Response.ok().build();
+        return Response.ok(client).build();
     }
 }
 

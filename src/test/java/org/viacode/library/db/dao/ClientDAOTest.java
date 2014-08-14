@@ -6,6 +6,8 @@ import com.github.springtestdbunit.annotation.ExpectedDatabase;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
@@ -25,6 +27,8 @@ import static org.junit.Assert.*;
         DbUnitTestExecutionListener.class })
 @DatabaseSetup("file:src/main/webapp//WEB-INF/test/initialTestData.xml")
 public class ClientDAOTest {
+
+    private final Logger logger = LogManager.getLogger(ClientDAOTest.class);
 
     @Autowired
     private ClientDAO clientDAO;
@@ -72,9 +76,9 @@ public class ClientDAOTest {
         List<Client> clients = clientDAO.getAll();
         assertNotNull(clients);
         for (Client client : clients) {
-            System.out.println("CLIENT: " + client.getId() + ": " + client.getFirstName() + " " + client.getLastName());
+            logger.info("CLIENT: " + client.getId() + ": " + client.getFirstName() + " " + client.getLastName());
         }
-        System.out.println("ACTUAL TEST SIZE = " + clients.size());
+        logger.info("ACTUAL TEST SIZE = " + clients.size());
         assertTrue(clients.size() == 3);
     }
 }

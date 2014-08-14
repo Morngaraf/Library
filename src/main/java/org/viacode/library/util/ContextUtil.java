@@ -1,4 +1,4 @@
-package org.viacode.library.utils;
+package org.viacode.library.util;
 
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;

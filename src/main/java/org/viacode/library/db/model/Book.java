@@ -90,4 +90,12 @@ public class Book {
             return null;
         return new Book(bj.getAuthor(), bj.getTitle());
     }
+
+    //FIXME: check toString() result
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder("");
+        sb.append(this.id).append(this.author).append(this.title);
+        return sb.toString();
+    }
 }

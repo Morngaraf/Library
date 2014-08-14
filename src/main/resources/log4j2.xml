@@ -6,10 +6,13 @@
         </Console>
     </Appenders>
     <Loggers>
-        <logger name="org.springframework" level="off">
+        <logger name="org.springframework" level="error">
             <AppenderRef ref="Console"/>
         </logger>
-        <logger name="org.hibernate" level="off">
+        <logger name="com.github.springtestdbunit" level="error">
+            <AppenderRef ref="Console"/>
+        </logger>
+        <logger name="org.dbunit" level="error">
             <AppenderRef ref="Console"/>
         </logger>
         <Root level="all">
