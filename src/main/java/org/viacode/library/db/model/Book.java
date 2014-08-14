@@ -91,11 +91,12 @@ public class Book {
         return new Book(bj.getAuthor(), bj.getTitle());
     }
 
-    //FIXME: check toString() result
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder("");
-        sb.append(this.id).append(this.author).append(this.title);
+        StringBuilder sb = new StringBuilder()
+            .append("id = ").append(this.id).append(System.lineSeparator())
+            .append("author = ").append(this.author).append(System.lineSeparator())
+            .append("title = ").append(this.title);
         return sb.toString();
     }
 }

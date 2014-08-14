@@ -1,5 +1,6 @@
 package org.viacode.library.service;
 
+import org.springframework.stereotype.Service;
 import org.viacode.library.exception.InternalServerErrorException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.viacode.library.exception.EntityNotFoundException;
@@ -12,6 +13,7 @@ import java.util.List;
  * VIAcode
  * Created by IVolkov on 8/8/2014.
  */
+@Service
 public class BookService {
 
     @Autowired
@@ -29,7 +31,7 @@ public class BookService {
         bookDAO.deleteById(id);
     }
 
-    public void addItem(Book book) throws InternalServerErrorException {
+    public void addBook(Book book) throws InternalServerErrorException {
         bookDAO.save(book);
     }
 

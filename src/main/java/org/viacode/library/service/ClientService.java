@@ -1,8 +1,7 @@
 package org.viacode.library.service;
 
-import org.hibernate.HibernateException;
-import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.viacode.library.exception.EntityNotFoundException;
 import org.viacode.library.db.dao.ClientDAO;
 import org.viacode.library.db.model.Book;
@@ -16,6 +15,7 @@ import java.util.List;
  * VIAcode
  * Created by IVolkov on 8/8/2014.
  */
+@Service
 public class ClientService {
 
     @Autowired

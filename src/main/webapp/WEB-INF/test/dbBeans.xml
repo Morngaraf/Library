@@ -16,6 +16,7 @@
 
     <context:annotation-config />
     <tx:annotation-driven transaction-manager="transactionManager" />
+    <context:component-scan base-package="org.viacode.library.service" />
     <!--<context:component-scan base-package="org.viacode.library.db.dao" />-->
 
     <bean id="clientDAO" class="org.viacode.library.db.dao.ClientDAO">

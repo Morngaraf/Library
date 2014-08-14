@@ -40,24 +40,27 @@ public class BaseDAOImpl<T> implements BaseDAO<T> {
 
     @Override
     public void save(T t) throws InternalServerErrorException {
+        logger.debug("Trying to save entity: {}", t);
         try {
             getCurrentSession().save(t);
         } catch (HibernateException ex) {
-            throw new InternalServerErrorException("Saving new object failed: " + t, ex);
+            throw new InternalServerErrorException("Failed to save new object: " + t, ex);
         }
     }
 
     @Override
     public void update(T t) throws InternalServerErrorException {
+        logger.debug("Trying to update entity: {}", t);
         try {
             getCurrentSession().update(t);
         } catch (HibernateException ex) {
-            throw new InternalServerErrorException("Updating object failed: " + t, ex);
+            throw new InternalServerErrorException("Failed to update object: " + t, ex);
         }
     }
 
     @Override
     public void delete(T t) throws InternalServerErrorException {
+        logger.debug("Trying to delete entity: {}", t);
         try {
             getCurrentSession().delete(t);
         } catch (HibernateException ex) {
@@ -68,6 +71,7 @@ public class BaseDAOImpl<T> implements BaseDAO<T> {
     @Override
     @SuppressWarnings("unchecked")
     public T getById(Long id) throws InternalServerErrorException {
+        logger.debug("Trying to get entity {} by id={}", clazz.getSimpleName(), id);
         try {
             return (T)getCurrentSession().get(clazz, id);
         } catch (HibernateException ex) {
@@ -77,6 +81,7 @@ public class BaseDAOImpl<T> implements BaseDAO<T> {
 
     @Override
     public void deleteById(Long id) throws InternalServerErrorException, EntityNotFoundException {
+        logger.debug("Trying to delete entity {} by id={}", clazz.getSimpleName(), id);
         try {
             T t = getById(id);
             if (t == null) throw new EntityNotFoundException("Entity " + clazz.getSimpleName() + " with id = " + id + " not found in the database");
@@ -84,13 +89,12 @@ public class BaseDAOImpl<T> implements BaseDAO<T> {
         } catch (HibernateException ex) {
             throw new InternalServerErrorException("Failed to delete object " + clazz.getSimpleName() + " with id= " + id, ex);
         }
-
-
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public List<T> getAll() throws InternalServerErrorException {
+        logger.debug("Trying to get all {} entities", clazz.getSimpleName());
         try {
             String hql = "select a from " + clazz.getSimpleName() + " a";
             return getCurrentSession().createQuery(hql).list();

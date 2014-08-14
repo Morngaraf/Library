@@ -25,7 +25,7 @@ public class BookDAO extends BaseDAOImpl<Book> {
         restrictionMap.put("author", book.getAuthor());
         restrictionMap.put("title", book.getTitle());
         //FIXME: check restrictionMap.toString() result
-        logger.info("Trying to find object {} with properties: {}", clazz.getSimpleName(), restrictionMap);
+        logger.info("Trying to find entity {} with properties: {}", clazz.getSimpleName(), restrictionMap);
         try {
             return (Book)getCurrentSession().createCriteria(clazz).add(Restrictions.allEq(restrictionMap)).uniqueResult();
         } catch (HibernateException ex) {

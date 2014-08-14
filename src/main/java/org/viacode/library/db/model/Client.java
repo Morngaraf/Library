@@ -95,11 +95,12 @@ public class Client {
         return new HashCodeBuilder(-354333345, -1492094871).append(this.id).toHashCode();
     }
 
-    //FIXME: check toString() result
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(this.id).append(this.firstName).append(this.lastName);
+        StringBuilder sb = new StringBuilder()
+            .append("id = ").append(this.id).append(System.lineSeparator())
+            .append("firstName = ").append(this.firstName).append(System.lineSeparator())
+            .append("lastName = ").append(this.lastName);
         return sb.toString();
     }
 }
