@@ -35,18 +35,13 @@ public class BookService {
         bookDAO.save(book);
     }
 
-    public Book takeBook(Long bookId) throws InternalServerErrorException {
-        Book book = getBookById(bookId);
-        if (book.getQuantity() <= 0) return null;
+    public void takeBook(Book book) throws InternalServerErrorException {
         book.setQuantity(book.getQuantity() - 1);
         bookDAO.update(book);
-        return book;
     }
 
-    public Book returnBook(Long bookId) throws InternalServerErrorException {
-        Book book = getBookById(bookId);
+    public void returnBook(Book book) throws InternalServerErrorException {
         book.setQuantity(book.getQuantity() + 1);
         bookDAO.update(book);
-        return book;
     }
 }

@@ -43,24 +43,24 @@ public class ClientDAOTest {
     @Test
     @ExpectedDatabase("file:src/main/webapp//WEB-INF/test/updateClientTestData.xml")
     public void testUpdate() throws Exception {
-        Client client = clientDAO.getById(new Long(3));
+        Client client = clientDAO.getById((long)3);
         assertNotNull(client);
         assertNotNull(client.getBooks());
         client.getBooks().clear();
         clientDAO.update(client);
-        client = clientDAO.getById(new Long(3));
+        client = clientDAO.getById((long)3);
         assertTrue(client.getBooks().size() == 0);
     }
 
     @Test
     @ExpectedDatabase("file:src/main/webapp//WEB-INF/test/deleteClientTestData.xml")
     public void testDelete() throws Exception {
-        clientDAO.delete(clientDAO.getById(new Long(2)));
+        clientDAO.delete(clientDAO.getById((long)2));
     }
 
     @Test
     public void testGetById() throws Exception {
-        Client client = clientDAO.getById(new Long(2));
+        Client client = clientDAO.getById((long)2);
         assertNotNull(client);
         assertTrue(client.getFirstName().equals("fName2") && client.getLastName().equals("lName2"));
     }
@@ -68,7 +68,7 @@ public class ClientDAOTest {
     @Test
     @ExpectedDatabase("file:src/main/webapp//WEB-INF/test/deleteClientTestData.xml")
     public void testDeleteById() throws Exception {
-        clientDAO.deleteById(new Long(2));
+        clientDAO.deleteById((long)2);
     }
 
     @Test

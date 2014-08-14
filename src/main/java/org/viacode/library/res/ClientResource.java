@@ -136,11 +136,14 @@ public class ClientResource {
         Client client;
         try {
             client = getClientService().addClientBook(clientId, bookId);
-        } catch (InternalServerErrorException | EntityNotFoundException ex) {
+        } catch (InternalServerErrorException | EntityException ex) {
             logger.error("Exception during processing 'assign book to client' operation : ", ex);
             if (ex instanceof EntityNotFoundException)
                 return Response.status(Response.Status.NOT_FOUND)
                         .entity("Sorry, there is no client/book in the library matching your request.").build();
+            if (ex instanceof EntityConflictException)
+                return Response.status(Response.Status.CONFLICT)
+                        .entity("Sorry, you already have this book or it's not available in library right now.").build();
             return Response.serverError().entity("Sorry, internal server error occurred. Please, try again later.").build();
         }
 

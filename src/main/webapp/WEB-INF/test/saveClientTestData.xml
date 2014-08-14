@@ -4,9 +4,9 @@
     <client id="2" firstName="fName2" lastName="lName2"/>
     <client id="3" firstName="fName3" lastName="lName3"/>
     <client id="4" firstName="fName4" lastName="lName4"/>
-    <book id="1" title="title1" author="author1" quantity="5"/>
-    <book id="2" title="title2" author="author2" quantity="7"/>
-    <book id="3" title="title3" author="author3" quantity="4"/>
+    <book id="1" title="title1" author="author1" quantity="2"/>
+    <book id="2" title="title2" author="author2" quantity="0"/>
+    <book id="3" title="title3" author="author3" quantity="1"/>
     <clienthasbook client_id="1" book_id="3"/>
     <clienthasbook client_id="3" book_id="1"/>
     <clienthasbook client_id="3" book_id="2"/>
