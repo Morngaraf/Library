@@ -16,12 +16,12 @@ import org.viacode.library.db.model.Book;
 import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations={"file:src/main/webapp//WEB-INF/test/dbBeans.xml"})
+@ContextConfiguration(locations={"file:src/main/webapp/WEB-INF/test/dbBeans.xml"})
 @Transactional
 @TransactionConfiguration(defaultRollback=true)
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
         DbUnitTestExecutionListener.class })
-@DatabaseSetup("file:src/main/webapp//WEB-INF/test/initialTestData.xml")
+@DatabaseSetup("file:src/main/webapp/WEB-INF/test/initialTestData.xml")
 public class BookDAOTest {
 
     @Autowired

@@ -65,7 +65,7 @@
 
     <aop:config proxy-target-class="true">
         <aop:pointcut id="userServicePointCut"
-              expression="execution(* org.viacode.library.db.dao.ClientDAO.*(..))" />
+                      expression="execution(* org.viacode.library.db.dao.ClientDAO.*(..))" />
         <aop:advisor advice-ref="txAdvice" pointcut-ref="userServicePointCut" />
     </aop:config>
 

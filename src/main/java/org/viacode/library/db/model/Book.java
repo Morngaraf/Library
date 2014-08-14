@@ -96,7 +96,8 @@ public class Book {
         StringBuilder sb = new StringBuilder()
             .append("id = ").append(this.id).append(System.lineSeparator())
             .append("author = ").append(this.author).append(System.lineSeparator())
-            .append("title = ").append(this.title);
+            .append("title = ").append(this.title).append(System.lineSeparator())
+            .append("quantity = ").append(this.quantity);
         return sb.toString();
     }
 }

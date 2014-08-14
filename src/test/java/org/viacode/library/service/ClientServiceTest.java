@@ -6,6 +6,7 @@ import com.github.springtestdbunit.annotation.ExpectedDatabase;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -13,24 +14,19 @@ import org.springframework.test.context.support.DependencyInjectionTestExecution
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.viacode.library.exception.EntityConflictException;
 import org.viacode.library.exception.EntityNotFoundException;
-import org.viacode.library.util.ContextUtil;
 
 import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations={"file:src/main/webapp//WEB-INF/test/dbBeans.xml"})
+@ContextConfiguration(locations={"file:src/main/webapp/WEB-INF/test/dbBeans.xml"})
 @TransactionConfiguration(defaultRollback=true)
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
         DbUnitTestExecutionListener.class })
-@DatabaseSetup("file:src/main/webapp//WEB-INF/test/initialTestData.xml")
+@DatabaseSetup("file:src/main/webapp/WEB-INF/test/initialTestData.xml")
 public class ClientServiceTest {
 
+    @Autowired
     private ClientService clientService;
-
-    @Before
-    public void setUp() throws Exception {
-        clientService = (ClientService) ContextUtil.getApplicationContext().getBean("clientService");
-    }
 
     @Test(expected = EntityNotFoundException.class)
     public void testAddClientBookWhenBookIdIsWrong() throws Exception {
@@ -53,7 +49,7 @@ public class ClientServiceTest {
     }
 
     @Test
-    @ExpectedDatabase("file:src/main/webapp//WEB-INF/test/addClientBookTestData.xml")
+    @ExpectedDatabase("file:src/main/webapp/WEB-INF/test/addClientBookTestData.xml")
     public void testAddClientBook() throws Exception {
         assertNotNull(clientService.addClientBook((long) 2, (long) 1));
     }
@@ -74,7 +70,7 @@ public class ClientServiceTest {
     }
 
     @Test
-    @ExpectedDatabase("file:src/main/webapp//WEB-INF/test/returnClientBookTestData.xml")
+    @ExpectedDatabase("file:src/main/webapp/WEB-INF/test/returnClientBookTestData.xml")
     public void testReturnClientBook() throws Exception {
         assertNotNull(clientService.returnClientBook((long) 3, (long) 1));
     }

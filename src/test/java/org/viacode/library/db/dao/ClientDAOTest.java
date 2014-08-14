@@ -6,8 +6,6 @@ import com.github.springtestdbunit.annotation.ExpectedDatabase;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
@@ -21,27 +19,25 @@ import java.util.List;
 import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations={"file:src/main/webapp//WEB-INF/test/dbBeans.xml"})
+@ContextConfiguration(locations={"file:src/main/webapp/WEB-INF/test/dbBeans.xml"})
 @TransactionConfiguration(defaultRollback=true)
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
         DbUnitTestExecutionListener.class })
-@DatabaseSetup("file:src/main/webapp//WEB-INF/test/initialTestData.xml")
+@DatabaseSetup("file:src/main/webapp/WEB-INF/test/initialTestData.xml")
 public class ClientDAOTest {
-
-    private final Logger logger = LogManager.getLogger(ClientDAOTest.class);
 
     @Autowired
     private ClientDAO clientDAO;
 
     @Test
-    @ExpectedDatabase("file:src/main/webapp//WEB-INF/test/saveClientTestData.xml")
+    @ExpectedDatabase("file:src/main/webapp/WEB-INF/test/saveClientTestData.xml")
     public void testSave() throws Exception {
         Client client = new Client("fName4", "lName4");
         clientDAO.save(client);
     }
 
     @Test
-    @ExpectedDatabase("file:src/main/webapp//WEB-INF/test/updateClientTestData.xml")
+    @ExpectedDatabase("file:src/main/webapp/WEB-INF/test/updateClientTestData.xml")
     public void testUpdate() throws Exception {
         Client client = clientDAO.getById((long)3);
         assertNotNull(client);
@@ -53,7 +49,7 @@ public class ClientDAOTest {
     }
 
     @Test
-    @ExpectedDatabase("file:src/main/webapp//WEB-INF/test/deleteClientTestData.xml")
+    @ExpectedDatabase("file:src/main/webapp/WEB-INF/test/deleteClientTestData.xml")
     public void testDelete() throws Exception {
         clientDAO.delete(clientDAO.getById((long)2));
     }
@@ -66,7 +62,7 @@ public class ClientDAOTest {
     }
 
     @Test
-    @ExpectedDatabase("file:src/main/webapp//WEB-INF/test/deleteClientTestData.xml")
+    @ExpectedDatabase("file:src/main/webapp/WEB-INF/test/deleteClientTestData.xml")
     public void testDeleteById() throws Exception {
         clientDAO.deleteById((long)2);
     }
@@ -75,10 +71,6 @@ public class ClientDAOTest {
     public void testGetAll() throws Exception {
         List<Client> clients = clientDAO.getAll();
         assertNotNull(clients);
-        for (Client client : clients) {
-            logger.info("CLIENT: " + client.getId() + ": " + client.getFirstName() + " " + client.getLastName());
-        }
-        logger.info("ACTUAL TEST SIZE = " + clients.size());
         assertTrue(clients.size() == 3);
     }
 }
