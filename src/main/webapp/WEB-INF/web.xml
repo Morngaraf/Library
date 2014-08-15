@@ -4,7 +4,7 @@
     <description>JAX-RS Simple Service</description>
     <context-param>
         <param-name>contextConfigLocation</param-name>
-        <param-value>WEB-INF/applicationContext.xml</param-value>
+        <param-value>WEB-INF/applicationContext.xml WEB-INF/dbContext.xml WEB-INF/i18nContext.xml</param-value>
     </context-param>
     <listener>
         <listener-class>

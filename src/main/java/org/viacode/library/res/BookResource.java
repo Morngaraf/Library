@@ -2,12 +2,14 @@ package org.viacode.library.res;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.viacode.library.exception.*;
 import org.viacode.library.db.json.BookJson;
 import org.viacode.library.db.model.Book;
 import org.viacode.library.exception.InternalServerErrorException;
 import org.viacode.library.service.BookService;
-import org.viacode.library.util.ContextUtil;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
@@ -17,12 +19,21 @@ import java.util.List;
 @Produces("application/json")
 public class BookResource {
 
-    private final Logger logger = LogManager.getLogger(BookResource.class);
+    private final static Logger logger = LogManager.getLogger(BookResource.class);
 
-    private BookService getBookService() {
+    @Autowired
+    private BookService bookService;
+
+    @Autowired
+    private MessageSource responseSource;
+    /*
+    private BookService bookService {
         return (BookService) ContextUtil.getApplicationContext().getBean("bookService");
-    }
-
+    }*/
+/*    responseSource.getMessage("noClient", null, LocaleContextHolder.getLocale())
+    responseSource.getMessage("noBook", null, LocaleContextHolder.getLocale())
+    responseSource.getMessage("noClientOrBook", null, LocaleContextHolder.getLocale())
+    responseSource.getMessage("internalServerError", null, LocaleContextHolder.getLocale())*/
     @GET
     @Path("/{book_id}")
     public Response getBookById(@PathParam("book_id") Long bookId) {
@@ -30,16 +41,20 @@ public class BookResource {
 
         Book book;
         try {
-            book = getBookService().getBookById(bookId);
-        } catch (InternalServerErrorException ex) {
+            book = bookService.getBookById(bookId);
+        } catch (InternalServerErrorException | EntityNotFoundException ex) {
             logger.error("Exception during processing 'get book by id' operation : ", ex);
-            return Response.serverError().entity("Sorry, internal server error occurred. Please, try again later.").build();
+            if (ex instanceof EntityNotFoundException)
+                return Response.status(Response.Status.NOT_FOUND)
+                        .entity(responseSource.getMessage("noBook", null, LocaleContextHolder.getLocale()))
+                        .build();
+            return Response.serverError()
+                    .entity(responseSource.getMessage("internalServerError", null, LocaleContextHolder.getLocale()))
+                    .build();
         }
 
         logger.info("GET request 'get book by id' where id={} SUCCESS.{}Returning book:{}", bookId, System.lineSeparator(), book);
 
-        if (book == null)
-            return Response.status(Response.Status.NOT_FOUND).entity("Sorry, there is no book in the library matching your request.").build();
         return Response.ok().entity(book).build();
     }
 
@@ -49,10 +64,12 @@ public class BookResource {
 
         List<Book> books;
         try {
-            books = getBookService().getAll();
+            books = bookService.getAll();
         } catch (InternalServerErrorException ex) {
             logger.error("Exception during processing 'get all books' operation : ", ex);
-            return Response.serverError().entity("Sorry, internal server error occurred. Please, try again later.").build();
+            return Response.serverError()
+                    .entity(responseSource.getMessage("internalServerError", null, LocaleContextHolder.getLocale()))
+                    .build();
         }
 
         logger.info("GET request 'get all books' SUCCESS.{}Books found={}", System.lineSeparator(), books.size());
@@ -66,12 +83,16 @@ public class BookResource {
         logger.info("Received DELETE request 'delete book by id' where id={}", bookId);
 
         try {
-            getBookService().deleteBook(bookId);
+            bookService.deleteBook(bookId);
         } catch (InternalServerErrorException | EntityNotFoundException ex) {
             logger.error("Exception during processing 'delete book by id' operation : ", ex);
             if (ex instanceof EntityNotFoundException)
-                return Response.status(Response.Status.NOT_FOUND).entity("Sorry, there is no book in the library matching your request.").build();
-            return Response.serverError().entity("Sorry, internal server error occurred. Please, try again later.").build();
+                return Response.status(Response.Status.NOT_FOUND)
+                        .entity(responseSource.getMessage("noBook", null, LocaleContextHolder.getLocale()))
+                        .build();
+            return Response.serverError()
+                    .entity(responseSource.getMessage("internalServerError", null, LocaleContextHolder.getLocale()))
+                    .build();
         }
 
         logger.info("DELETE request 'delete book by id' where id={} SUCCESS.", bookId);
@@ -90,10 +111,12 @@ public class BookResource {
             return Response.status(Response.Status.BAD_REQUEST).entity("Wrong JSON input!").build();
 
         try {
-            getBookService().addBook(book);
+            bookService.addBook(book);
         } catch (InternalServerErrorException ex) {
             logger.error("Exception during processing 'add new book' operation : ", ex);
-            return Response.serverError().entity("Sorry, internal server error occurred. Please, try again later.").build();
+            return Response.serverError()
+                    .entity(responseSource.getMessage("internalServerError", null, LocaleContextHolder.getLocale()))
+                    .build();
         }
 
         logger.info("POST request 'add new book' where book={} SUCCESS.{}Book added:{}", bookJson, System.lineSeparator(), book);

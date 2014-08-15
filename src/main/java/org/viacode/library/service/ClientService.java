@@ -25,7 +25,7 @@ public class ClientService {
     @Autowired
     private BookService bookService;
 
-    public Client getClientById(Long id) throws InternalServerErrorException {
+    public Client getClientById(Long id) throws InternalServerErrorException, EntityNotFoundException {
         return clientDAO.getById(id);
     }
 

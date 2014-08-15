@@ -19,7 +19,7 @@ import java.util.List;
 import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations={"file:src/main/webapp/WEB-INF/test/dbBeans.xml"})
+@ContextConfiguration(locations={"file:src/main/webapp/WEB-INF/test/dbContext.xml"})
 @TransactionConfiguration(defaultRollback=true)
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
         DbUnitTestExecutionListener.class })

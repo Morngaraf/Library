@@ -19,7 +19,7 @@ public class BookService {
     @Autowired
     private BookDAO bookDAO;
 
-    public Book getBookById(Long id) throws InternalServerErrorException {
+    public Book getBookById(Long id) throws InternalServerErrorException, EntityNotFoundException {
         return bookDAO.getById(id);
     }
 

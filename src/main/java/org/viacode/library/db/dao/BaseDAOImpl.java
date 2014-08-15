@@ -70,10 +70,13 @@ public class BaseDAOImpl<T> implements BaseDAO<T> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public T getById(Long id) throws InternalServerErrorException {
+    public T getById(Long id) throws InternalServerErrorException, EntityNotFoundException {
         logger.debug("Trying to get entity {} by id={}", clazz.getSimpleName(), id);
         try {
-            return (T)getCurrentSession().get(clazz, id);
+            T t = (T)getCurrentSession().get(clazz, id);
+            if (t == null)
+                throw new EntityNotFoundException("Entity " + clazz.getSimpleName() + " with id = " + id + " not found in the database");
+            return t;
         } catch (HibernateException ex) {
             throw new InternalServerErrorException("Failed to find object " + clazz.getSimpleName() + " with id= " + id, ex);
         }
@@ -84,7 +87,6 @@ public class BaseDAOImpl<T> implements BaseDAO<T> {
         logger.debug("Trying to delete entity {} by id={}", clazz.getSimpleName(), id);
         try {
             T t = getById(id);
-            if (t == null) throw new EntityNotFoundException("Entity " + clazz.getSimpleName() + " with id = " + id + " not found in the database");
             getCurrentSession().delete(t);
         } catch (HibernateException ex) {
             throw new InternalServerErrorException("Failed to delete object " + clazz.getSimpleName() + " with id= " + id, ex);

@@ -16,7 +16,7 @@ import org.viacode.library.db.model.Book;
 import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations={"file:src/main/webapp/WEB-INF/test/dbBeans.xml"})
+@ContextConfiguration(locations={"file:src/main/webapp/WEB-INF/test/dbContext.xml"})
 @Transactional
 @TransactionConfiguration(defaultRollback=true)
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,

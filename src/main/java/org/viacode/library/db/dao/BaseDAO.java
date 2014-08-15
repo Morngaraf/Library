@@ -16,7 +16,7 @@ public interface BaseDAO<T> {
     void save(T t) throws InternalServerErrorException;
     void delete(T t) throws InternalServerErrorException;
     void update(T t) throws InternalServerErrorException;
-    T getById(Long id) throws InternalServerErrorException;
+    T getById(Long id) throws InternalServerErrorException, EntityNotFoundException;
     void deleteById(Long id) throws InternalServerErrorException, EntityNotFoundException;
     List<T> getAll() throws InternalServerErrorException;
 
