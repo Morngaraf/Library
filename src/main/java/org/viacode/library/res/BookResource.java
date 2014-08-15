@@ -26,14 +26,7 @@ public class BookResource {
 
     @Autowired
     private MessageSource responseSource;
-    /*
-    private BookService bookService {
-        return (BookService) ContextUtil.getApplicationContext().getBean("bookService");
-    }*/
-/*    responseSource.getMessage("noClient", null, LocaleContextHolder.getLocale())
-    responseSource.getMessage("noBook", null, LocaleContextHolder.getLocale())
-    responseSource.getMessage("noClientOrBook", null, LocaleContextHolder.getLocale())
-    responseSource.getMessage("internalServerError", null, LocaleContextHolder.getLocale())*/
+
     @GET
     @Path("/{book_id}")
     public Response getBookById(@PathParam("book_id") Long bookId) {

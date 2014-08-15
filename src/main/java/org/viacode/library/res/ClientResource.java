@@ -29,19 +29,12 @@ public class ClientResource {
 
     @Autowired
     private MessageSource responseSource;
-/*
-    private ClientService clientService throws InternalServerErrorException{
-        try {
-            return (ClientService) ContextUtil.getApplicationContext().getBean("clientService");
-        } catch (BeansException ex) {
-            throw new InternalServerErrorException("Error generating bean ClientService", ex);
-        }
-    }*/
 
     @GET
     @Path("/{client_id}")
     public Response getClientById(@PathParam("client_id") Long clientId) {
         logger.info("Received GET request 'get client by id' where id={}", clientId);
+
         Client client;
         try {
             client = clientService.getClientById(clientId);
