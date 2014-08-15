@@ -39,8 +39,8 @@ public class BookResource {
             logger.error("Exception during processing 'get book by id' operation : ", ex);
             if (ex instanceof EntityNotFoundException)
                 return Response.status(Response.Status.NOT_FOUND)
-                        .entity(responseSource.getMessage("noBook", null, LocaleContextHolder.getLocale()))
-                        .build();
+                    .entity(responseSource.getMessage("noBook", null, LocaleContextHolder.getLocale()))
+                    .build();
             return Response.serverError()
                     .entity(responseSource.getMessage("internalServerError", null, LocaleContextHolder.getLocale()))
                     .build();

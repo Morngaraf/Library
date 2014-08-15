@@ -26,7 +26,7 @@ public class BookFinderResource {
     private MessageSource responseSource;
 
     @POST
-    @Path("/find")
+    @Path("/find-by-title")
     public Response findBookByTitle(@QueryParam("title") String title) {
         return findBookByKeyValue("title", title);
     }
