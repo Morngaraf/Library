@@ -9,6 +9,7 @@
         <jaxrs:serviceBeans>
             <bean class="org.viacode.library.res.ClientResource"/>
             <bean class="org.viacode.library.res.BookResource"/>
+            <bean class="org.viacode.library.res.BookFinderResource"/>
         </jaxrs:serviceBeans>
         <jaxrs:providers>
             <bean class="org.codehaus.jackson.jaxrs.JacksonJsonProvider"/>

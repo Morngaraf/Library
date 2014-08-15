@@ -51,6 +51,11 @@
         <property name="password" value="root" />
     </bean>
 
+    <!--SolrServer Bean-->
+    <bean id="solrServer" class="org.apache.solr.client.solrj.impl.HttpSolrServer">
+        <constructor-arg index="0" value="http://localhost:8983/solr" />
+    </bean>
+
     <bean id="transactionManager"
           class="org.springframework.orm.hibernate4.HibernateTransactionManager">
         <property name="sessionFactory" ref="sessionFactory" />

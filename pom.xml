@@ -141,6 +141,11 @@
             <artifactId>log4j-1.2-api</artifactId>
             <version>${org.log4j.version}</version>
         </dependency>-->
+        <dependency>
+            <groupId>org.apache.solr</groupId>
+            <artifactId>solr-solrj</artifactId>
+            <version>4.9.0</version>
+        </dependency>
     </dependencies>
     <build>
         <pluginManagement>
