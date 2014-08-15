@@ -1,6 +1,5 @@
 package org.viacode.library.service;
 
-import org.apache.logging.log4j.LogManager;
 import org.springframework.stereotype.Service;
 import org.viacode.library.exception.InternalServerErrorException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,10 +36,8 @@ public class BookService {
     }
 
     public void takeBook(Book book) throws InternalServerErrorException {
-        LogManager.getLogger(BookService.class).trace("SSSSSSSSSSSSUUUUUUU1: {}", book);
         book.setQuantity(book.getQuantity() - 1);
         bookDAO.update(book);
-        LogManager.getLogger(BookService.class).trace("SSSSSSSSSSSSUUUUUUU2: {}", book);
     }
 
     public void returnBook(Book book) throws InternalServerErrorException {

@@ -1,6 +1,5 @@
 package org.viacode.library.service;
 
-import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.viacode.library.exception.EntityConflictException;
@@ -10,7 +9,6 @@ import org.viacode.library.db.dao.ClientDAO;
 import org.viacode.library.db.model.Book;
 import org.viacode.library.db.model.Client;
 import org.viacode.library.exception.InternalServerErrorException;
-import org.viacode.library.util.ContextUtil;
 
 import java.util.List;
 
@@ -52,10 +50,10 @@ public class ClientService {
             throw new EntityNotFoundException("Entity " + Client.class.getSimpleName() + " with id = " + clientId + " not found in the database.");
         if (bookToTake.getQuantity() <= 0)
             throw new EntityConflictException("Entity " + Book.class.getSimpleName() + " with id = " + bookId + " has ZERO quantity.");
-        LogManager.getLogger(ClientService.class).trace("FUUUUUUUUUUUUUUUUUUUUUUUU:\r\nCLIENT\r\n{}\r\nBOOKS\r\n{}\r\nBOOK{}", client, client.getBooks(), bookToTake);
         if (!client.getBooks().add(bookToTake))
             throw new EntityConflictException("Entity " + Client.class.getSimpleName() + " with client_id = " + clientId +
                     " already has " + Book.class.getSimpleName() + " with book_id = " + bookId);
+        bookService.takeBook(bookToTake);
         clientDAO.update(client);
         return client;
     }
